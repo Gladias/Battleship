@@ -25,23 +25,29 @@ class Board:
 
         return board_str
 
-    def check_availability(self):
-        #TODO sprawdzac te dwie funkcjie nizej na raz
-        pass
+    def get_cell_by_coords(self, x, y):
+        return self.board[x][y]
 
-    def check_if_edge_of_board(self, first_cell, length, horizontal: bool):
-        if horizontal:
-            if first_cell.coordinates[1] + length > 10:
+    def is_place_ok(self, first_cell_coordinates, length, orientation):
+        return not self.check_if_edge_of_board(first_cell_coordinates, length, orientation) and not self.check_if_another_ship_is_placed(first_cell_coordinates, length, orientation)
+
+    def check_if_edge_of_board(self, first_cell_coordinates, length, orientation):
+        if orientation == "Horizontal":
+            if first_cell_coordinates[1] + length > 10:
                 return True
         else:
-            if first_cell.coordinates[0] + length > 10:
+            if first_cell_coordinates[0] + length > 10:
                 return True
         return False
 
-    def check_if_another_ship_is_placed(self, first_cell, length, horizontal: bool):
+    def check_if_another_ship_is_placed(self, first_cell_coordinates, length, orientation):
         """Checks if another ship has been placed in given cell list"""
-        if horizontal:
+        if orientation == "Horizontal":
             for i in range(length):
-                if self.board[first_cell.coordinates[0]][i + first_cell.coordinates[1]].is_ship_on():
+                if self.board[first_cell_coordinates[0]][i + first_cell_coordinates[1]].is_ship_on():
+                    return True
+        else:
+            for i in range(length):
+                if self.board[first_cell_coordinates[0] + i][first_cell_coordinates[1]].is_ship_on():
                     return True
         return False
