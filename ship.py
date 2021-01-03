@@ -1,7 +1,8 @@
 class Ship:
-    def __init__(self, cells):
+    def __init__(self, cells, orientation):
         self.cells = cells
         self.length = len(cells)
+        self.orientation = orientation
 
     def is_sunk(self):
         hit_sum = 0
