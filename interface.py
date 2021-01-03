@@ -1,6 +1,7 @@
 import pygame
 
 import const
+from enums import Sign
 
 
 class GameObject:
@@ -49,7 +50,7 @@ class Text(GameObject):
 def text_init(font):
     ships_caption = Text("Twoje okręty:", font, const.SHIPS_CAPTION_POSITION)
     first_board_caption = Text("Plansza 1", font, const.FIRST_BOARD_CAPTION_POSITION)
-    return [ships_caption, first_board_caption]
+    return [first_board_caption, ships_caption]
 
 def ships_init():
     ships = []
@@ -75,9 +76,20 @@ def update_screen(text_list, ships, buttons, first_board, second_board, screen):
         pygame.draw.rect(screen, button.bg_color, button.rect)
         screen.blit(button.rendered_text, button.text_rect)
 
-    for row in first_board.board:
-        for cell in row:
-            if cell.is_ship_on():
-                pygame.draw.rect(screen, const.SHIP_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
-            else:
-                pygame.draw.rect(screen, const.CELL_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
+    if first_board.is_visible():
+        for row in first_board.board:
+            for cell in row:
+                if cell.is_ship_on():
+                    pygame.draw.rect(screen, const.SHIP_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
+                else:
+                    pygame.draw.rect(screen, const.CELL_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
+
+    if second_board.is_visible():
+        for row in second_board.board:
+            for cell in row:
+                if cell.sign == Sign.CLEAR:
+                    pygame.draw.rect(screen, const.CELL_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
+                elif cell.sign == Sign.MISS:
+                    pygame.draw.rect(screen, const.MISS_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))
+                else:
+                    pygame.draw.rect(screen, const.HIT_COLOR, cell.position + (const.CELL_SIZE, const.CELL_SIZE))

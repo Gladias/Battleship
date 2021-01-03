@@ -43,7 +43,7 @@ class Player:
 
             new_ship = Ship(cell_list, orientation)
             self.place_ship(new_ship)
-            
+
 
     def check_ships(self):
         """

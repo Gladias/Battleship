@@ -86,10 +86,26 @@ class Game:
                             else:
                                 print("Next stage")
                                 self.bot.place_random_ships(self.second_board)
+                                buttons = []
+                                self.second_board.visible = True
+                                text_list.pop()
+                                text_list.append(interface.Text("Plansza 2", self.font, const.SECOND_BOARD_CAPTION_POSITION))
                                 stage = next(self.stages)
 
                 if stage == "shooting":
-                    pass
+                    self.info = "Twoja tura"
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse_pos = event.pos
+
+                        for row in self.second_board.board:
+                            for cell in row:
+                                if cell.rect.collidepoint(mouse_pos):
+                                    if cell.has_been_shot():
+                                        self.info = "W to pole został już oddany strzał"
+                                    else:
+                                        cell.shoot()
+
 
                 interface.update_screen(text_list, ships, buttons, self.first_board, self.second_board, self.screen)
                 interface.update_info(self.info, self.font, self.screen)

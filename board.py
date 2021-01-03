@@ -3,8 +3,8 @@ import const
 
 
 class Board:
-    def __init__(self, is_visible):
-        self.is_visible = is_visible
+    def __init__(self, visible):
+        self.visible = visible
         self.board = []
 
     def generate(self, first_cell_position):
@@ -15,6 +15,9 @@ class Board:
                                 first_cell_position[1] + (row * (const.CELL_SIZE + const.CELL_GAP))), (row, column))
                 line.append(element)
             self.board.append(line)
+
+    def is_visible(self):
+        return self.visible
 
     def __str__(self):
         board_str = ""
