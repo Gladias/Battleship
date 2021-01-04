@@ -3,6 +3,7 @@ import pygame
 import game
 import const
 from board import Board
+from bot import Bot
 from player import Player
 
 
@@ -16,7 +17,7 @@ def main():
     second_board.generate(const.SECOND_CELL_POSITION)
 
     player = Player()
-    bot = Player()
+    bot = Bot()
 
     battleship = game.Game(screen, player, bot, first_board, second_board)
     battleship.run()

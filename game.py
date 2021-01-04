@@ -95,7 +95,7 @@ class Game:
                 if stage == "shooting":
                     self.info = "Twoja tura"
 
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.type == pygame.MOUSEBUTTONDOWN and self.player.is_player_turn():
                         mouse_pos = event.pos
 
                         for row in self.second_board.board:
@@ -105,6 +105,9 @@ class Game:
                                         self.info = "W to pole został już oddany strzał"
                                     else:
                                         cell.shoot()
+
+
+
 
 
                 interface.update_screen(text_list, ships, buttons, self.first_board, self.second_board, self.screen)
