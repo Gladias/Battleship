@@ -1,8 +1,3 @@
-import random
-
-import board
-from ship import Ship
-
 class Player:
     def __init__(self):
         self.ships = []
@@ -17,10 +12,10 @@ class Player:
     def place_ship(self, ship):
         self.ships.append(ship)
 
-    def check_ships(self):
-        """
-        Returns number of not sunk ships
-        """
+    def shoot(self, clicked_cell, second_board):
+        return clicked_cell.shoot()
+
+    def count_not_sunk_ships(self):
         n = 0
         for ship in self.ships:
             if not ship.is_sunk():

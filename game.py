@@ -4,6 +4,7 @@ import pygame
 
 import const
 import interface
+from main import main
 from ship import Ship
 
 
@@ -39,7 +40,7 @@ class Game:
         self.player.player_turn = True
         is_player_winner = None
 
-
+        self.info = "Rozmieść swoje okręty na planszy 1"
         #TODO change cursor image after clicking on ship
         while True:
             for event in pygame.event.get():
@@ -47,8 +48,6 @@ class Game:
                     sys.exit()
 
                 if stage == "ship placement":
-                    self.info = "Rozmieść swoje okręty na planszy 1"
-
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                         if active_ship_orientation == "Horizontal":
                             active_ship_orientation = "Vertical"
@@ -82,16 +81,17 @@ class Game:
                                             self.player.place_ship(new_ship)
                                             self.active_ship = 0
                                             active_ship_orientation = "Horizontal"
+                                            self.info = "Rozmieść swoje okręty na planszy 1"
+                                        else:
+                                            self.info = "Okręt nie może zostać umieszczony w tym miejscu"
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         mouse_pos = event.pos
 
                         if buttons[0].rect.collidepoint(mouse_pos):
-                            print(self.player.get_placed_ships_number())
                             if self.player.get_placed_ships_number() < 5:
                                 self.info = "Nie rozmieszczono wszystkich okrętów na planszy"
                             else:
-                                print("Next stage")
                                 self.bot.place_random_ships(self.second_board)
                                 buttons = []
                                 self.second_board.visible = True
@@ -100,8 +100,6 @@ class Game:
                                 stage = next(self.stages)
 
                 if stage == "shooting":
-                    self.info = "Twoja tura"
-
                     if event.type == pygame.MOUSEBUTTONDOWN and self.player.is_player_turn():
 
                         mouse_pos = event.pos
@@ -110,10 +108,20 @@ class Game:
                         if clicked_cell is not None and clicked_cell.has_been_shot():
                             self.info = "W to pole został już oddany strzał"
                         elif clicked_cell is not None:
-                            self.player.shoot(clicked_cell, self.second_board)
+                            before_ships = self.bot.count_not_sunk_ships()
+                            hit = self.player.shoot(clicked_cell, self.second_board)
+                            after_ships = self.bot.count_not_sunk_ships()
+
+                            if after_ships != before_ships:
+                                self.info = "Zatopienie statku"
+                            elif hit:
+                                self.info = "Trafienie"
+                            else:
+                                self.info = "Spudłowanie"
+
                             self.bot.shoot(self.first_board)
-                            if self.check_for_finish()[0] == True:
-                                if self.check_for_finish()[1] == self.player:
+                            if self.check_for_finish()[0]:
+                                if self.check_for_finish()[1]:
                                     is_player_winner = True
                                 else:
                                     is_player_winner = False
@@ -129,7 +137,7 @@ class Game:
                         mouse_pos = event.pos
 
                         if finish_buttons[0].rect.collidepoint(mouse_pos):
-                            stage = iter(const.GAME_STAGES)
+                            main()
 
                         elif finish_buttons[1].rect.collidepoint(mouse_pos):
                             sys.exit()
@@ -143,13 +151,13 @@ class Game:
             if ship.is_sunk():
                 destroyed_1 += 1
         if destroyed_1 == 5:
-            return (True, self.player)
+            return (True, False)
 
         destroyed_2 = 0
         for ship in self.bot.ships:
             if ship.is_sunk():
                 destroyed_2 += 1
         if destroyed_2 == 5:
-            return (True, self.bot)
+            return (True, True)
 
         return (False, None)

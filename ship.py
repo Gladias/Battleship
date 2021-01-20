@@ -11,6 +11,8 @@ class Ship:
                 hit_sum += 1
 
         if hit_sum == self.length:
+            for cell in self.cells:
+                cell.mark_sunk()
             return True
         else:
             return False
