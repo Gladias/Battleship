@@ -19,6 +19,9 @@ class Game:
         self.font = pygame.font.Font(str(const.ASSETS / "FiraCode-Medium.ttf"), const.FONT_SIZE)
         self.active_ship = 0  # len of active ship
 
+    def update_info(self):
+        pass
+
     def run(self):
         icon = pygame.image.load(str(const.ASSETS / "icon.png"))
         pygame.display.set_icon(icon)
@@ -32,6 +35,10 @@ class Game:
         active_ship_orientation = "Horizontal"   # Can be Horizontal or Vertical
 
         buttons = [interface.Button(pygame.Rect(const.CONFIRM_BUTTON), "Potwierdź", self.font, const.CELL_COLOR)]
+
+        self.player.player_turn = True
+        is_player_winner = None
+
 
         #TODO change cursor image after clicking on ship
         while True:
@@ -96,20 +103,53 @@ class Game:
                     self.info = "Twoja tura"
 
                     if event.type == pygame.MOUSEBUTTONDOWN and self.player.is_player_turn():
+
                         mouse_pos = event.pos
+                        clicked_cell = self.second_board.look_for_click(mouse_pos)
 
-                        for row in self.second_board.board:
-                            for cell in row:
-                                if cell.rect.collidepoint(mouse_pos):
-                                    if cell.has_been_shot():
-                                        self.info = "W to pole został już oddany strzał"
-                                    else:
-                                        cell.shoot()
-
-
-
-
+                        if clicked_cell is not None and clicked_cell.has_been_shot():
+                            self.info = "W to pole został już oddany strzał"
+                        elif clicked_cell is not None:
+                            self.player.shoot(clicked_cell, self.second_board)
+                            self.bot.shoot(self.first_board)
+                            if self.check_for_finish()[0] == True:
+                                if self.check_for_finish()[1] == self.player:
+                                    is_player_winner = True
+                                else:
+                                    is_player_winner = False
+                                stage = next(self.stages)
 
                 interface.update_screen(text_list, ships, buttons, self.first_board, self.second_board, self.screen)
                 interface.update_info(self.info, self.font, self.screen)
+
+                if stage == "end":
+                    finish_buttons = interface.draw_finish_menu(self.screen, self.font, is_player_winner)
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse_pos = event.pos
+
+                        if finish_buttons[0].rect.collidepoint(mouse_pos):
+                            stage = iter(const.GAME_STAGES)
+
+                        elif finish_buttons[1].rect.collidepoint(mouse_pos):
+                            sys.exit()
+
                 pygame.display.flip()
+
+
+    def check_for_finish(self, ):
+        destroyed_1 = 0
+        for ship in self.player.ships:
+            if ship.is_sunk():
+                destroyed_1 += 1
+        if destroyed_1 == 5:
+            return (True, self.player)
+
+        destroyed_2 = 0
+        for ship in self.bot.ships:
+            if ship.is_sunk():
+                destroyed_2 += 1
+        if destroyed_2 == 5:
+            return (True, self.bot)
+
+        return (False, None)

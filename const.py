@@ -1,5 +1,7 @@
 import pathlib
 
+from enums import Sign, Direction
+
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -7,12 +9,20 @@ ASSETS = pathlib.Path("assets/")
 
 GAME_STAGES = ["ship placement", "shooting", "end"]
 
+BOT_SHOOTS = {
+    Direction.LEFT: Sign.CLEAR,
+    Direction.RIGHT: Sign.CLEAR,
+    Direction.UP: Sign.CLEAR,
+    Direction.DOWN: Sign.CLEAR
+}
+
 FIRST_CELL_POSITION = (240, 240)
 SECOND_CELL_POSITION = (722, 240)
 CELL_SIZE = 30
 CELL_GAP = 2
 
 CELL_COLOR = (255, 255, 255)
+SUNK_LINES_COLOR = (0, 0, 0)
 SHIP_COLOR = (138, 138, 138)
 HIT_COLOR = (255, 54, 54)
 MISS_COLOR = (207, 207, 207)
@@ -26,6 +36,17 @@ SHIPS_BUTTONS = [(30, 360, 5 * CELL_SIZE, CELL_SIZE),
                  (30, 520, 2 * CELL_SIZE, CELL_SIZE)]
 
 CONFIRM_BUTTON = (325, 160, 140, 40)
+
+# FINISH
+FINISH_SQUARE = (390, 100, 500, 400)
+FINISH_BACKGROUND_COLOR = (255, 255, 255)
+
+RESULT_POSITION = (WINDOW_WIDTH / 2, 250)
+PLAY_AGAIN_BUTTON = (450, 380, 200, 60)
+PLAY_AGAIN_COLOR = (125, 173, 118)
+EXIT_BUTTON = (700, 380, 100, 60)
+EXIT_COLOR = (209, 57, 46)
+
 
 # TEXT
 FONT_COLOR = (0, 0, 0)
