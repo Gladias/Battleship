@@ -97,6 +97,7 @@ class Game:
                                 self.second_board.visible = True
                                 text_list.pop()
                                 text_list.append(interface.Text("Plansza 2", self.font, const.SECOND_BOARD_CAPTION_POSITION))
+                                self.info = "Faza druga, oddaj strzał na planszy nr 2"
                                 stage = next(self.stages)
 
                 if stage == "shooting":
@@ -119,7 +120,13 @@ class Game:
                             else:
                                 self.info = "Spudłowanie"
 
+                            before_ships = self.player.count_not_sunk_ships()
                             self.bot.shoot(self.first_board)
+                            after_ships = self.player.count_not_sunk_ships()
+
+                            if after_ships != before_ships:
+                                self.bot.last_shot_sunk_enemy_ship()
+
                             if self.check_for_finish()[0]:
                                 if self.check_for_finish()[1]:
                                     is_player_winner = True
@@ -145,19 +152,19 @@ class Game:
                 pygame.display.flip()
 
 
-    def check_for_finish(self, ):
+    def check_for_finish(self):
         destroyed_1 = 0
         for ship in self.player.ships:
             if ship.is_sunk():
                 destroyed_1 += 1
         if destroyed_1 == 5:
-            return (True, False)
+            return True, False
 
         destroyed_2 = 0
         for ship in self.bot.ships:
             if ship.is_sunk():
                 destroyed_2 += 1
         if destroyed_2 == 5:
-            return (True, True)
+            return True, True
 
-        return (False, None)
+        return False, None

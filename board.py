@@ -19,6 +19,9 @@ class Board:
     def is_visible(self):
         return self.visible
 
+    def set_visible(self, visible):
+        self.visible = visible
+
     def __str__(self):
         board_str = ""
         for row in self.board:
@@ -28,8 +31,15 @@ class Board:
 
         return board_str
 
+    def look_for_click(self, click):
+        for row in self.board:
+            for cell in row:
+                if cell.rect.collidepoint(click):
+                    return cell
+        return None
+
     def get_cell_by_coords(self, x, y):
-        return self.board[x][y]
+        return self.board[y][x]
 
     def is_place_ok(self, first_cell_coordinates, length, orientation):
         return not self.check_if_edge_of_board(first_cell_coordinates, length, orientation) and not self.check_if_another_ship_is_placed(first_cell_coordinates, length, orientation)
