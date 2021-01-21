@@ -31,8 +31,8 @@ class Game:
         self.screen.fill(const.BACKGROUND_COLOR)
 
         stage = next(self.stages)  # First stage - ship placement
-        text_list = interface.text_init(self.font)
-        ships = interface.ships_init()
+        text_list = interface.Text.text_init(None, self.font)
+        ships = interface.Button.ships_init(None)
         active_ship_orientation = "Horizontal"   # Can be Horizontal or Vertical
 
         buttons = [interface.Button(pygame.Rect(const.CONFIRM_BUTTON), "Potwierdź", self.font, const.CELL_COLOR)]
@@ -41,7 +41,7 @@ class Game:
         is_player_winner = None
 
         self.info = "Rozmieść swoje okręty na planszy 1"
-        #TODO change cursor image after clicking on ship
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -134,11 +134,11 @@ class Game:
                                     is_player_winner = False
                                 stage = next(self.stages)
 
-                interface.update_screen(text_list, ships, buttons, self.first_board, self.second_board, self.screen)
-                interface.update_info(self.info, self.font, self.screen)
+                interface.GameObject.update_screen(None, text_list, ships, buttons, self.first_board, self.second_board, self.screen)
+                interface.Text.update_info(None, self.info, self.font, self.screen)
 
                 if stage == "end":
-                    finish_buttons = interface.draw_finish_menu(self.screen, self.font, is_player_winner)
+                    finish_buttons = interface.GameObject.draw_finish_menu(None, self.screen, self.font, is_player_winner)
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         mouse_pos = event.pos
@@ -150,7 +150,6 @@ class Game:
                             sys.exit()
 
                 pygame.display.flip()
-
 
     def check_for_finish(self):
         destroyed_1 = 0
